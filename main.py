@@ -1,8 +1,8 @@
-import falcon
 import json
-
 from urllib import parse
 from wsgiref.simple_server import make_server
+import fdb
+import falcon
 
 
 class ThingsResource:
@@ -35,18 +35,43 @@ class ThingsResource:
 class JsonResource:
     def on_get(self, req, resp):
         resp.status = falcon.HTTP_200
-        resp.content_type = 'text/json'
+        resp.content_type = 'application/json'
         content = {'message': 'Hello World!'}
         resp.body = json.dumps(content)
+
+
+
+
+class DBResource:
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.content_type = 'application/json'
+
+        peoples = fdb.Person.select()
+
+        people_list = []
+
+        for p in peoples:
+            d = {
+                'name': p.name,
+                'birth': str(p.birthday)
+            }
+            people_list.append(d)
+
+        content = {'people': people_list}
+        resp.body = json.dumps(content)
+
 
 
 app = falcon.API()
 
 things = ThingsResource()
 json_resource = JsonResource()
+db_resource = DBResource()
 
 app.add_route('/things', things)
 app.add_route('/other', json_resource)
+app.add_route('/db', db_resource)
 
 httpd = make_server('', 8000, app)
 print("Serving on port 8000...")
