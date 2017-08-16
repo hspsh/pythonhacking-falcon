@@ -1,0 +1,18 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}Add ToDo{% endblock %}
+
+{% block content %}
+
+<h2>Add ToDo</h2>
+<form method="post">
+    <label>Title
+        <input type="text" name="title"/>
+    </label>
+    <label>Description
+        <input type="text" name="description"/>
+    </label>
+    <input type="submit" name="button" value="create"/>
+</form>
+
+{%  endblock %}

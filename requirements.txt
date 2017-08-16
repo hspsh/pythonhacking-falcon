@@ -1,2 +1,3 @@
 falcon
 peewee
+jinja2

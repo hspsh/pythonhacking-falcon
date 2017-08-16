@@ -1,0 +1,13 @@
+{% extends "layout.jinja2" %}
+
+{% block title %}ToDo list{% endblock %}
+
+{% block content %}
+
+    {% for t in tasks %}
+        <h3>{{ t.title }}</h3>
+        <p><b>Created at:</b> {{ t.creation_time }}</p>
+        <p>{{ t.description }}</p>
+    {% endfor %}
+
+{% endblock %}
