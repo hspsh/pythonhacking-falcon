@@ -91,3 +91,10 @@ class JsonHello:
         resp.content_type = 'application/json'
         content = {'message': 'Hello World!'}
         resp.body = json.dumps(content)
+
+
+class Index:
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.content_type = 'text/html'
+        resp.body = render_template('index.jinja2')

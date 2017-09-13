@@ -2,7 +2,7 @@ from wsgiref.simple_server import make_server
 
 import falcon
 
-from superweb.resources import ToDo, JsonHello, ToDoList, ToDoJsonList, ToDoComplete, ToDoTaskCompleted
+from superweb.resources import ToDo, JsonHello, ToDoList, ToDoJsonList, ToDoComplete, ToDoTaskCompleted, Index
 
 app = falcon.API()
 
@@ -13,6 +13,7 @@ todo_complete = ToDoComplete()
 todo_task_completed = ToDoTaskCompleted()
 json_todo_list = ToDoJsonList()
 
+app.add_route('/', Index())
 app.add_route('/todo/add', todo)
 app.add_route('/todo/complete/{task_id}', todo_complete)
 app.add_route('/todo/completed', todo_task_completed)
