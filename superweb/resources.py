@@ -53,13 +53,11 @@ class ToDo:
         description = req_args['description'][0]
         deadline_at = req_args['deadline_at'][0] if 'deadline_at' in req_args else None
 
+        if deadline_at is not None:
+            deadline_at = datetime.datetime.strptime(deadline_at, "%Y-%m-%S")  # this will raise ValueError on format mismatch
 
-        task_item = database.Task.insert(title=title,
-                                  description=description,
-                                  deadline_at=deadline_at).execute()
-
-        # Zapisujemy obiekt task do bazy danych.
-        #task_item.sa
+        database.Task.insert(title=title, description=description,
+                             deadline_at=deadline_at).execute()
 
         raise falcon.HTTPSeeOther('/todo/')
 
