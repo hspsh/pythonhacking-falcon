@@ -3,19 +3,22 @@
 {% block title %}Add ToDo{% endblock %}
 
 {% block content %}
-
-<h2>Add ToDo</h2>
-<form method="post">
-    <label>Title
-        <input type="text" name="title"/>
-    </label>
-    <label>Description
-        <input type="text" name="description"/>
-    </label>
-        <label>Deadline
-        <input type="date" name="deadline_at"/>
-    </label>
-    <input type="submit" name="button" value="create"/>
-</form>
-
-{%  endblock %}
+    <h2>Add ToDo</h2>
+    <div class="ui form">
+        <form method="post">
+            <div class="field">
+                <label for="title">Title</label>
+                <input name="title" id="title" required/>
+            </div>
+            <div class="field">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="3" required></textarea>
+            </div>
+            <div class="field">
+                <label for="deadline">Deadline</label>
+                <input type="date" name="deadline_at" id="deadline"/>
+            </div>
+            <button class="ui button">Submit</button>
+        </form>
+    </div>
+{% endblock %}
