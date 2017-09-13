@@ -1,9 +1,12 @@
+import pathlib
+
 from datetime import datetime
 
 from peewee import *
 
 # Tworzymy obiekt bazy danych
-db = SqliteDatabase('todo.db')
+DB_PATH = str(pathlib.Path(__file__).with_name('todo.db'))
+db = SqliteDatabase(DB_PATH)
 
 
 class Task(Model):
