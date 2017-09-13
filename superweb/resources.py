@@ -7,6 +7,8 @@ from playhouse.shortcuts import model_to_dict
 from superweb import database
 from superweb.base import render_template, json_serializer_handler
 
+import datetime
+
 
 class ToDoJsonList:
     def on_get(self, req, resp):
@@ -24,7 +26,7 @@ class ToDoJsonList:
 
 class ToDoList:
     def on_get(self, req, resp):
-        tasks = database.Task.select()
+        tasks = database.Task.select().where(database.Task.is_completed == False)
 
         tasks_list = []
         for t in tasks:
@@ -47,13 +49,40 @@ class ToDo:
         # parsowanie danych
         req_args = parse.parse_qs(data)
 
-        task_item = database.Task(title=req_args['title'][0],
-                                  description=req_args['description'][0])
+        title = req_args['title'][0]
+        description = req_args['description'][0]
+        deadline_at = req_args['deadline_at'][0] if 'deadline_at' in req_args else None
+
+
+        task_item = database.Task.insert(title=title,
+                                  description=description,
+                                  deadline_at=deadline_at).execute()
 
         # Zapisujemy obiekt task do bazy danych.
-        task_item.save()
+        #task_item.sa
 
         raise falcon.HTTPSeeOther('/todo/')
+
+
+class ToDoComplete:
+    def on_put(self, req, resp, task_id):
+        task_id = int(task_id)
+
+        query = database.Task.update(is_completed=True, completed_at=datetime.datetime.now()).where(database.Task.id == task_id)
+        query.execute()
+
+        raise falcon.HTTPSeeOther('/todo/')
+
+
+class ToDoTaskCompleted:
+    def on_get(self, req, resp):
+        completed_task = database.Task.select().where(database.Task.is_completed == True)
+        tasks_list = []
+        for t in completed_task:
+            tasks_list.append(model_to_dict(t))
+
+        resp.content_type = 'text/html'
+        resp.body = render_template('todo_list.jinja2', {'tasks': tasks_list})
 
 
 class JsonHello:

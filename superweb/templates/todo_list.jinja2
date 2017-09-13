@@ -6,8 +6,17 @@
 
     {% for t in tasks %}
         <h3>{{ t.title }}</h3>
-        <p><b>Created at:</b> {{ t.creation_time }}</p>
-        <p>{{ t.description }}</p>
+        <p><b>Created at:</b> {{ t.created_at.strftime('%Y-%m-%d') }}</p>
+        <p>desc: {{ t.description }}</p>
+
+        {% if t.completed_at is not none %}
+        <p>completed: {{ t.completed_at.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
+
+        {% if t.deadline_at is not none %}
+        <p>deadline: {{ t.deadline_at.strftime('%Y-%m-%d') }}</p>
+        {% endif %}
+
     {% endfor %}
 
 {% endblock %}
