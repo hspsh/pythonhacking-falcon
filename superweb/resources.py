@@ -63,7 +63,7 @@ class ToDo:
 
 
 class ToDoComplete:
-    def on_put(self, req, resp, task_id):
+    def on_post(self, req, resp, task_id):
         task_id = int(task_id)
 
         query = database.Task.update(is_completed=True, completed_at=datetime.datetime.now()).where(database.Task.id == task_id)
