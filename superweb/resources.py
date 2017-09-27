@@ -141,7 +141,9 @@ class TodoTaskResource:
             resp.status = falcon.HTTP_NOT_FOUND
         else:
             data = json.loads(req.stream.read().decode('utf-8'))
-            item_to_update.update(**data).execute()
+            for k, v in data.items():
+                setattr(item_to_update, k, v)
+            item_to_update.save()
             resp.status = falcon.HTTP_OK
 
     def on_patch(self, req, resp, task_id):
