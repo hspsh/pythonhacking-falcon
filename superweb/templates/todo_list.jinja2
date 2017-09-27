@@ -27,9 +27,11 @@
                             {{ t.deadline_at.strftime('%Y-%m-%d') }}
                         {% endif %}
                     </span>
-                    <div class="ui right floated button green disabled tiny">
+                    <form method="post" action="/todo/complete/{{t.id}}">
+                    <button type="submit" class="ui right floated button green tiny">
                         Mark as complete
-                    </div>
+                    </button>
+                    </form>
                 </div>
             </div>
         </div>
