@@ -3,20 +3,36 @@
 {% block title %}ToDo list{% endblock %}
 
 {% block content %}
-
+<div class="ui items">
     {% for t in tasks %}
-        <h3>{{ t.title }}</h3>
-        <p><b>Created at:</b> {{ t.created_at.strftime('%Y-%m-%d') }}</p>
-        <p>desc: {{ t.description }}</p>
-
-        {% if t.completed_at is not none %}
-        <p>completed: {{ t.completed_at.strftime('%Y-%m-%d') }}</p>
-        {% endif %}
-
-        {% if t.deadline_at is not none %}
-        <p>deadline: {{ t.deadline_at.strftime('%Y-%m-%d') }}</p>
-        {% endif %}
-
+        <div class="ui item">
+            <div class="content">
+                <a class="header">{{ t.title }}</a>
+                <div class="description">
+                    <p>{{ t.description }}</p>
+                </div>
+                <div class="meta extra">
+                    <span>
+                        <i class="clock icon"></i><strong>Created:</strong> {{ t.created_at.strftime('%Y-%m-%d') }}
+                    </span>
+                    <span>
+                        {% if t.completed_at is not none %}
+                            <i class="clock icon"></i><strong>Completed:</strong>
+                            {{ t.completed_at.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                    </span>
+                    <span class="four wide column">
+                        {% if t.deadline_at is not none %}
+                            <i class="alarm icon {% if not t.is_completed and t.deadline_at <= now %} red {% endif %}"></i><strong>Due to:</strong>
+                            {{ t.deadline_at.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                    </span>
+                    <div class="ui right floated button green disabled tiny">
+                        Mark as complete
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endfor %}
-
+</div>
 {% endblock %}

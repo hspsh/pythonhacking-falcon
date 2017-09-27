@@ -33,7 +33,7 @@ class ToDoList:
             tasks_list.append(model_to_dict(t))
 
         resp.content_type = 'text/html'
-        resp.body = render_template('todo_list.jinja2', {'tasks': tasks_list})
+        resp.body = render_template('todo_list.jinja2', {'tasks': tasks_list, 'now': datetime.datetime.now()})
 
 
 class ToDo:
@@ -80,7 +80,7 @@ class ToDoTaskCompleted:
             tasks_list.append(model_to_dict(t))
 
         resp.content_type = 'text/html'
-        resp.body = render_template('todo_list.jinja2', {'tasks': tasks_list})
+        resp.body = render_template('todo_list.jinja2', {'tasks': tasks_list, 'now': datetime.datetime.now()})
 
 
 class JsonHello:
