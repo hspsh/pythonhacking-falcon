@@ -9,6 +9,12 @@ from superweb.base import render_template, json_serializer_handler
 
 import datetime
 
+APPLICATION_JSON = 'application/json'
+
+
+def json_dumps(obj):
+    return json.dumps(obj, default=json_serializer_handler)
+
 
 class ToDoJsonList:
     def on_get(self, req, resp):
@@ -18,7 +24,7 @@ class ToDoJsonList:
         for t in tasks:
             tasks_list.append(model_to_dict(t))
 
-        tasks_json = json.dumps(tasks_list, default=json_serializer_handler)
+        tasks_json = json_dumps(tasks_list)
 
         resp.content_type = 'application/json'
         resp.body = tasks_json
@@ -96,3 +102,81 @@ class Index:
         resp.status = falcon.HTTP_200
         resp.content_type = 'text/html'
         resp.body = render_template('index.jinja2')
+
+
+class TodoTaskResource:
+    # Rules for implementing respective verbs:
+    # http://www.restapitutorial.com/lessons/httpmethods.html
+    def on_post(self, req, resp, task_id):
+        try:
+            database.Task.get(database.Task.id == task_id)
+        except database.DoesNotExist:
+            resp.status = falcon.HTTP_NOT_FOUND
+        else:
+            resp.status = falcon.HTTP_CONFLICT
+
+    def on_get(self, req, resp, task_id):
+        try:
+            item_to_get = database.Task.get(database.Task.id == task_id)
+        except database.DoesNotExist:
+            resp.status = falcon.HTTP_NOT_FOUND
+        else:
+            resp.body = json_dumps(model_to_dict(item_to_get))
+            resp.status = falcon.HTTP_OK
+            resp.content_type = APPLICATION_JSON
+
+    def on_delete(self, req, resp, task_id):
+        try:
+            item_to_delete = database.Task.get(database.Task.id == task_id)
+        except database.DoesNotExist:
+            resp.status = falcon.HTTP_NOT_FOUND
+        else:
+            item_to_delete.delete_instance()
+            resp.status = falcon.HTTP_OK
+
+    def on_put(self, req, resp, task_id):
+        try:
+            item_to_update = database.Task.get(database.Task.id == task_id)
+        except database.DoesNotExist:
+            resp.status = falcon.HTTP_NOT_FOUND
+        else:
+            data = json.loads(req.stream.read().decode('utf-8'))
+            for k, v in data.items():
+                setattr(item_to_update, k, v)
+            item_to_update.save()
+            resp.status = falcon.HTTP_OK
+
+    def on_patch(self, req, resp, task_id):
+        # TBD: do we need it?
+        resp.status = falcon.HTTP_METHOD_NOT_ALLOWED
+
+
+class TodoTasksResource:
+    # Rules for implementing respective verbs:
+    # http://www.restapitutorial.com/lessons/httpmethods.html
+    def on_post(self, req, resp):
+        data = json.loads(req.stream.read().decode('utf-8'))
+        title = data['title']
+        description = data['description']
+        deadline_at = data.get('deadline_at')
+        created_id = database.Task.insert(title=title,
+                                          description=description,
+                                          deadline_at=deadline_at).execute()
+        resp.set_headers({'Location': '/api/todo_tasks/{}'.format(created_id)})
+        resp.status = falcon.HTTP_CREATED
+
+    def on_get(self, req, resp):
+        # TODO: pagination, filtering
+        database.Task.select()
+        resp.status = falcon.HTTP_200
+        resp.content_type = 'application/json'
+        resp.body = json_dumps([model_to_dict(t) for t in database.Task.select()])
+
+    def on_delete(self, req, resp):
+        resp.status = falcon.HTTP_METHOD_NOT_ALLOWED
+
+    def on_put(self, req, resp):
+        resp.status = falcon.HTTP_METHOD_NOT_ALLOWED
+
+    def on_patch(self, req, resp, task_id):
+        resp.status = falcon.HTTP_METHOD_NOT_ALLOWED
