@@ -31,5 +31,11 @@ pip install --upgrade -r requirements.txt
 Uruchomienie aplikacji
 
 ```bash
-python main.py
+python -m superweb
+```
+
+### Launching docker image
+```bash
+docker build -t superweb-falcon .
+docker run -p 8000:8000 superweb-falcon
 ```
