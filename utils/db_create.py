@@ -1,7 +1,7 @@
 from superweb import database
 
-database.db.connect()
+database.backend.connect()
 
 tables = [database.Task]
-database.db.drop_tables(tables)
-database.db.create_tables(tables)
+database.backend.drop_tables(tables)
+database.backend.create_tables(tables)
