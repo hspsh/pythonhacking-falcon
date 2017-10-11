@@ -1,6 +1,6 @@
 import falcon
 
-from superweb import resources
+from . import resources
 
 app = falcon.API()
 
