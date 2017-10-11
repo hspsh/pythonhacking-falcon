@@ -6,7 +6,7 @@ from peewee import *
 
 # Tworzymy obiekt bazy danych
 DB_PATH = str(pathlib.Path(__file__).with_name('todo.db'))
-db = SqliteDatabase(DB_PATH)
+backend = SqliteDatabase(DB_PATH)
 
 
 class Task(Model):
@@ -17,8 +17,6 @@ class Task(Model):
     completed_at = DateTimeField(null=True)
     deadline_at = DateTimeField(null=True)
 
-
-
     # Tutaj łączymy nasz model z bazą danych "db" zdefiniowaną wyżej.
     class Meta:
-        database = db
+        database = backend

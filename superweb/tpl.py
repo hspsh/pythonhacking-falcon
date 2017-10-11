@@ -1,4 +1,3 @@
-import datetime
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -19,11 +18,3 @@ def render_template(name, context=None):
     rendered_template = template.render(context)
 
     return rendered_template
-
-
-def json_serializer_handler(obj):
-    """Funkcja pozwalająca serializować do jsona obiekt datetime"""
-    if isinstance(obj, (datetime.datetime, datetime.date)):
-        return obj.isoformat()
-    else:
-        return None
